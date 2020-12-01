@@ -60,7 +60,12 @@ public class SongController {
 		Map<String, Object> response = new HashMap<String, Object>();
 		response.put("path", String.format("GET %s", Utils.getUrl(request)));
 
-		return null;
+		DbQueryStatus dbQueryStatus = songDal.getSongTitleById(songId);
+
+		response.put("data", dbQueryStatus.getMessage());
+		response = Utils.setResponseStatus(response, dbQueryStatus.getdbQueryExecResult(), dbQueryStatus.getData());
+
+		return response;
 	}
 
 	
@@ -71,7 +76,12 @@ public class SongController {
 		Map<String, Object> response = new HashMap<String, Object>();
 		response.put("path", String.format("DELETE %s", Utils.getUrl(request)));
 
-		return null;
+		DbQueryStatus dbQueryStatus = songDal.deleteSongById(songId);
+
+		//response.put("data", dbQueryStatus.getMessage());
+		response = Utils.setResponseStatus(response, dbQueryStatus.getdbQueryExecResult(), dbQueryStatus.getData());
+
+		return response;
 	}
 
 	
@@ -99,7 +109,19 @@ public class SongController {
 
 		Map<String, Object> response = new HashMap<String, Object>();
 		response.put("data", String.format("PUT %s", Utils.getUrl(request)));
+		boolean sd;
+		if (shouldDecrement.equals("true")) {
+			sd = true;
+		} else {
+			sd = false;
+		}
+		
+		DbQueryStatus dbQueryStatus = songDal.updateSongFavouritesCount(songId, sd);
 
-		return null;
+		//response.put("data", dbQueryStatus.getMessage());
+		response = Utils.setResponseStatus(response, dbQueryStatus.getdbQueryExecResult(), dbQueryStatus.getData());
+
+		return response;
+
 	}
 }
