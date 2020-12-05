@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONObject;
 import org.neo4j.driver.v1.Driver;
 import org.neo4j.driver.v1.Record;
 import org.neo4j.driver.v1.Session;
@@ -13,10 +14,12 @@ import org.neo4j.driver.v1.StatementResult;
 import org.springframework.stereotype.Repository;
 import org.neo4j.driver.v1.Transaction;
 
+
 @Repository
 public class ProfileDriverImpl implements ProfileDriver {
 
 	Driver driver = ProfileMicroserviceApplication.driver;
+	
 
 	public static void InitProfileDb() {
 		String queryStr;
@@ -186,7 +189,40 @@ public class ProfileDriverImpl implements ProfileDriver {
 
 	@Override
 	public DbQueryStatus getAllSongFriendsLike(String userName) {
-			
-		return null;
+		DbQueryStatus status;
+		ArrayList<String> songs = new ArrayList<String>();
+		JSONObject deserialized = new JSONObject();
+		Map<String, Object> insertUserName = new HashMap<String, Object>(); 
+		//Map<String, Object> insertF = new HashMap<String, Object>();
+		Map<String, Object> insert = new HashMap<String, Object>();
+		String user = "";
+		String song = "";
+		insertUserName.put("userName", userName);
+		try (Session session = ProfileMicroserviceApplication.driver.session()){
+			try (Transaction tx = session.beginTransaction()){
+				StatementResult node_boolean2;
+	            StatementResult node_boolean = tx.run("MATCH (a:profile {userName:$userName}) RETURN a.userName", 
+	                insertUserName);
+	            StatementResult node_boolean1 = tx.run("MATCH (a:profile {userName:$userName})-->(profile) RETURN profile.userName", 
+	            		insertUserName);
+	            while (node_boolean1.hasNext()) {
+	            	user = node_boolean1.next().get("profile.userName").asString();
+	            	System.out.println(user);
+	            	insert.put("plName", user + "-favourites");
+	            	node_boolean2 = tx.run("MATCH (a:playlist {plName:$plName})-->(song) RETURN song.song", 
+		            		insert);
+	            	while (node_boolean2.hasNext()) {
+	            		song = node_boolean2.next().get("song.song").asString();
+	            		songs.add(song);
+	            		System.out.println(song);
+	            	}
+	            	deserialized.put(user, songs);
+	            	songs.clear();
+	            }
+	            deserialized.remove("null");
+	            status = new DbQueryStatus(deserialized.toString(), DbQueryExecResult.QUERY_OK);
+	            return status;
+	        }
+		}
 	}
 }

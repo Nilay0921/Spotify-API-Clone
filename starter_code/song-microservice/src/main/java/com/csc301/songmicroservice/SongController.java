@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import okhttp3.Call;
+import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -59,10 +60,13 @@ public class SongController {
 
 		Map<String, Object> response = new HashMap<String, Object>();
 		response.put("path", String.format("GET %s", Utils.getUrl(request)));
-
-		DbQueryStatus dbQueryStatus = songDal.getSongTitleById(songId);
-
-		response.put("data", dbQueryStatus.getMessage());
+		DbQueryStatus dbQueryStatus;
+		
+		dbQueryStatus = songDal.getSongTitleById(songId);
+		
+		if (dbQueryStatus.getMessage() != null) {
+			response.put("data", dbQueryStatus.getMessage());
+		}
 		response = Utils.setResponseStatus(response, dbQueryStatus.getdbQueryExecResult(), dbQueryStatus.getData());
 
 		return response;
@@ -75,8 +79,56 @@ public class SongController {
 
 		Map<String, Object> response = new HashMap<String, Object>();
 		response.put("path", String.format("DELETE %s", Utils.getUrl(request)));
-
+		
+		ObjectMapper mapper = new ObjectMapper();
 		DbQueryStatus dbQueryStatus = songDal.deleteSongById(songId);
+		
+		//int s = playlistDriver.checkSong(userName, songId);
+		/*if (s == 1) {
+			dbQueryStatus = new DbQueryStatus(null, DbQueryExecResult.QUERY_OK);
+			response = Utils.setResponseStatus(response, dbQueryStatus.getdbQueryExecResult(), dbQueryStatus.getData());
+			return response;
+		}*/
+		
+		//String path = String.format("GET http://localhost:3001/getSongById/songId", songId);
+
+		if (String.valueOf(songId) != null) {
+			HttpUrl.Builder urlBuilder = HttpUrl.parse("http://localhost:3002/deleteAllSongsFromDb/" + songId).newBuilder();
+			//urlBuilder.addQueryParameter("secondNumber", secondNumber);
+			String url = urlBuilder.build().toString();
+			
+			//HttpUrl.Builder urlBuilder1 = HttpUrl.parse("http://localhost:3001/getSongTitleById/" + songId).newBuilder();
+			//urlBuilder.addQueryParameter("shouldDecrement", "false");
+			//urlBuilder.addQueryParameter("secondNumber", secondNumber);
+			//String url1 = urlBuilder.build().toString();
+				
+			//System.out.println(url);
+		    //RequestBody body = RequestBody.create(null, new byte[0]);
+
+			Request r = new Request.Builder()
+					.url(url)
+					.method("DELETE", null)
+					.build();
+
+			Call call = client.newCall(r);
+			Response responseFromAddMs = null;
+			
+
+			String addServiceBody = "{}";
+
+			try {
+				responseFromAddMs = call.execute();
+				addServiceBody = responseFromAddMs.body().string();
+				//responseFromSong = call1.execute();
+				//addServiceBody1 = responseFromSong.body().string();
+				//System.out.println(addServiceBody);
+				//response.put("data", mapper.readValue(addServiceBody, Map.class));
+				//songName = mapper.readValue(addServiceBody, Map.class).get("data").toString();
+				//String status1 = mapper.readValue(addServiceBody1, Map.class).get("data").toString();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 
 		//response.put("data", dbQueryStatus.getMessage());
 		response = Utils.setResponseStatus(response, dbQueryStatus.getdbQueryExecResult(), dbQueryStatus.getData());
@@ -90,11 +142,18 @@ public class SongController {
 			HttpServletRequest request) {
 
 		Map<String, Object> response = new HashMap<String, Object>();
-		//response.put("path", String.format("POST %s", Utils.getUrl(request)));
+		response.put("path", String.format("POST %s", Utils.getUrl(request)));
+		DbQueryStatus dbQueryStatus;
+		
+		if (params.get("songName") == null || params.get("songArtistFullName") == null || params.get("songAlbum") == null) {
+			dbQueryStatus = new DbQueryStatus(null, DbQueryExecResult.QUERY_ERROR_GENERIC);
+			response = Utils.setResponseStatus(response, dbQueryStatus.getdbQueryExecResult(), dbQueryStatus.getData());
+			return response;
+		}
 		
 		Song songToAdd = new Song(params.get("songName"), params.get("songArtistFullName"), 
 				params.get("songAlbum"));
-		DbQueryStatus dbQueryStatus = songDal.addSong(songToAdd);
+		dbQueryStatus = songDal.addSong(songToAdd);
 
 		response.put("data", dbQueryStatus.getMessage());
 		response = Utils.setResponseStatus(response, dbQueryStatus.getdbQueryExecResult(), dbQueryStatus.getData());
@@ -109,14 +168,26 @@ public class SongController {
 
 		Map<String, Object> response = new HashMap<String, Object>();
 		response.put("data", String.format("PUT %s", Utils.getUrl(request)));
+		DbQueryStatus dbQueryStatus;
+		//System.out.println(shouldDecrement);
+		if (shouldDecrement.equals("")) {
+			dbQueryStatus = new DbQueryStatus(null, DbQueryExecResult.QUERY_ERROR_GENERIC);
+			response = Utils.setResponseStatus(response, dbQueryStatus.getdbQueryExecResult(), dbQueryStatus.getData());
+			return response;
+		}
+		
 		boolean sd;
 		if (shouldDecrement.equals("true")) {
 			sd = true;
-		} else {
+		} else if (shouldDecrement.equals("false")) {
 			sd = false;
+		} else {
+			dbQueryStatus = new DbQueryStatus(null, DbQueryExecResult.QUERY_ERROR_GENERIC);
+			response = Utils.setResponseStatus(response, dbQueryStatus.getdbQueryExecResult(), dbQueryStatus.getData());
+			return response;
 		}
 		
-		DbQueryStatus dbQueryStatus = songDal.updateSongFavouritesCount(songId, sd);
+		dbQueryStatus = songDal.updateSongFavouritesCount(songId, sd);
 
 		//response.put("data", dbQueryStatus.getMessage());
 		response = Utils.setResponseStatus(response, dbQueryStatus.getdbQueryExecResult(), dbQueryStatus.getData());
