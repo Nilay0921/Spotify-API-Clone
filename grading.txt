@@ -1,0 +1,23 @@
+Marked by: Brian Lin (briankw.lin@mail.utoronto.ca)
+Team: microservicea3
+Total mark: 4/66
+
+NOTES: Below commit not first-letter-capitalized. Profile controller needs to be better-documented.
+https://github.com/UTSCCSCC01/a3-microservices/commit/bd5c16daf54caa57f988ec662be453a905590d08
+
+**Git Usage**
+Total Marks: 1/2.0
+Correct usage of commit messages and changesets
+[0/1.0] – All commit messages have their first sentence letter capitalized and are less than 50 characters long. For long commit messages please see this guide. Commit messages should also make sense and summarize the changeset well.
+[1/1.0] – Each changeset should be contained within a specific feature (i.e. don’t commit a change which impacts multiple features, use 1 commit per feature implementation/change).
+
+**Code Style**
+Total Marks: 3/4.0
+Appropriate usage of variable naming conventions (i.e. not pointless variable names like ‘var a = something’ in both microservices and routes/functions are all commented well
+[1/1.0] – Appropriate usage of variable names in Song microservice
+[1/1.0] – Appropriate usage of variable names in Profile microservice
+[1/1.0] – Routes/functions are commented appropriately in the Song microservice
+[0/1.0] – Routes/functions are commented appropriately in Profile microservice
+
+**Automarker Output**
+Automarker not run due to incorrect file structure.
