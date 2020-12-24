@@ -1,6 +1,8 @@
 Marked by: Brian Lin (briankw.lin@mail.utoronto.ca)
 Team: microservicea3
 
+GRADE AFTER REMARK: (1 + 3 + 32) - (floor(58 * 0.1)) / 58 = 31/58
+
 NOTES: Below commit not first-letter-capitalized. Profile controller needs to be better-documented.
 https://github.com/UTSCCSCC01/a3-microservices/commit/bd5c16daf54caa57f988ec662be453a905590d08
 
