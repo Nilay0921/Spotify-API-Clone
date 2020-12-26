@@ -221,6 +221,7 @@ public class ProfileDriverImpl implements ProfileDriver {
 	            }
 	            deserialized.remove("null");
 	            status = new DbQueryStatus(deserialized.toString(), DbQueryExecResult.QUERY_OK);
+	            status.setData(deserialized);
 	            return status;
 	        }
 		}

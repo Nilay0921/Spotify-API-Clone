@@ -38,7 +38,8 @@ public class SongDalImpl implements SongDal {
 		//doc.append("id", songToAdd.getId());
 		db.getCollection("songs").insertOne(doc);
 		songToAdd.setId(doc.getObjectId("_id"));
-		status = new DbQueryStatus(songToAdd.getJsonRepresentation().toString(), DbQueryExecResult.QUERY_OK);	
+		status = new DbQueryStatus(songToAdd.getJsonRepresentation().toString(), DbQueryExecResult.QUERY_OK);
+		status.setData(songToAdd.getJsonRepresentation());
 		return status;
 	}
 

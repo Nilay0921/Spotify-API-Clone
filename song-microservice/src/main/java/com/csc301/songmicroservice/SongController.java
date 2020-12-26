@@ -155,7 +155,7 @@ public class SongController {
 				params.get("songAlbum"));
 		dbQueryStatus = songDal.addSong(songToAdd);
 
-		response.put("data", dbQueryStatus.getMessage());
+		response.put("data", dbQueryStatus.getData());
 		response = Utils.setResponseStatus(response, dbQueryStatus.getdbQueryExecResult(), dbQueryStatus.getData());
 
 		return response;

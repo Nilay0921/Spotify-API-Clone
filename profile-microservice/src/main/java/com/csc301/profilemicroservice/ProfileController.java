@@ -60,11 +60,11 @@ public class ProfileController {
 		String fullName = params.get("fullName");
 		String password = params.get("password");
 		
-		if (userName.equals("") || fullName.equals("") || password.equals("")) {
+		/*if (userName.equals("") || fullName.equals("") || password.equals("")) {
 			dbQueryStatus = new DbQueryStatus(null, DbQueryExecResult.QUERY_ERROR_GENERIC);
 			response = Utils.setResponseStatus(response, dbQueryStatus.getdbQueryExecResult(), dbQueryStatus.getData());
 			return response;
-		}
+		}*/
 		
 		dbQueryStatus = profileDriver.createUserProfile(userName, fullName, password);
 
@@ -94,11 +94,11 @@ public class ProfileController {
 			HttpServletRequest request) {
 
 		Map<String, Object> response = new HashMap<String, Object>();
-		response.put("path", String.format("PUT %s", Utils.getUrl(request)));
+		response.put("path", String.format("GET %s", Utils.getUrl(request)));
 		
 		DbQueryStatus dbQueryStatus = profileDriver.getAllSongFriendsLike(userName);
 		
-		response.put("message", dbQueryStatus.getMessage());
+		response.put("data", dbQueryStatus.getData());
 		response = Utils.setResponseStatus(response, dbQueryStatus.getdbQueryExecResult(), dbQueryStatus.getData());
 
 		return response;
