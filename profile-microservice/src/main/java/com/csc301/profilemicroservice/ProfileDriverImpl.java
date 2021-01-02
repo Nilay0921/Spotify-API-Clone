@@ -207,14 +207,12 @@ public class ProfileDriverImpl implements ProfileDriver {
 	            		insertUserName);
 	            while (node_boolean1.hasNext()) {
 	            	user = node_boolean1.next().get("profile.userName").asString();
-	            	System.out.println(user);
 	            	insert.put("plName", user + "-favourites");
 	            	node_boolean2 = tx.run("MATCH (a:playlist {plName:$plName})-->(song) RETURN song.song", 
 		            		insert);
 	            	while (node_boolean2.hasNext()) {
 	            		song = node_boolean2.next().get("song.song").asString();
 	            		songs.add(song);
-	            		System.out.println(song);
 	            	}
 	            	deserialized.put(user, songs);
 	            	songs.clear();

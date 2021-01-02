@@ -34,8 +34,6 @@ public class SongDalImpl implements SongDal {
 				.append("songArtistFullName", songToAdd.getSongArtistFullName())
 				.append("songAlbum", songToAdd.getSongAlbum())
 			    .append("songAmountFavourites", songToAdd.getSongAmountFavourites());
-		//System.out.println(songToAdd.getId());
-		//doc.append("id", songToAdd.getId());
 		db.getCollection("songs").insertOne(doc);
 		songToAdd.setId(doc.getObjectId("_id"));
 		status = new DbQueryStatus(songToAdd.getJsonRepresentation().toString(), DbQueryExecResult.QUERY_OK);
@@ -54,7 +52,6 @@ public class SongDalImpl implements SongDal {
 				status = new DbQueryStatus(documents.first().toJson(), DbQueryExecResult.QUERY_OK);
 				return status;
 			}
-			//return 1;
 		}
 		status = new DbQueryStatus(null, DbQueryExecResult.QUERY_ERROR_NOT_FOUND);
 		return status;
@@ -85,7 +82,6 @@ public class SongDalImpl implements SongDal {
 				status = new DbQueryStatus(null, DbQueryExecResult.QUERY_OK);
 				return status;
 			}
-			//return 1;
 		}
 		status = new DbQueryStatus(null, DbQueryExecResult.QUERY_ERROR_NOT_FOUND);
 		return status;

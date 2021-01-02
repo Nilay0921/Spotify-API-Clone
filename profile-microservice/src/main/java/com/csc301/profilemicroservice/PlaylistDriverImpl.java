@@ -42,11 +42,8 @@ public class PlaylistDriverImpl implements PlaylistDriver {
 	
 	public int checkSong (String userName, String songId) {
 		Map<String, Object> insertUserName = new HashMap<String, Object>(); 
-		//Map<String, Object> insertF = new HashMap<String, Object>();
 		Map<String, Object> insert = new HashMap<String, Object>();
 		insertUserName.put("userName", userName);
-		//insertF.put("frndUserName", frndUserName);
-		//insert.put("userName", userName);
 		insert.put("plName", userName + "-favourites");
 		insert.put("songId", songId);
 		try (Session session = ProfileMicroserviceApplication.driver.session()){
@@ -70,28 +67,10 @@ public class PlaylistDriverImpl implements PlaylistDriver {
 		ObjectMapper mapper = new ObjectMapper();
 		Map<String, Object> response = new HashMap<String, Object>();
 		String songName = "";
-		
-		//int s = playlistDriver.checkSong(userName, songId);
-		/*if (s == 1) {
-			dbQueryStatus = new DbQueryStatus(null, DbQueryExecResult.QUERY_OK);
-			response = Utils.setResponseStatus(response, dbQueryStatus.getdbQueryExecResult(), dbQueryStatus.getData());
-			return response;
-		}*/
-		
-		//String path = String.format("GET http://localhost:3001/getSongById/songId", songId);
 
 		if (String.valueOf(songId) != null) {
 			HttpUrl.Builder urlBuilder = HttpUrl.parse("http://localhost:3001/getSongTitleById/" + songId).newBuilder();
-			//urlBuilder.addQueryParameter("secondNumber", secondNumber);
 			String url = urlBuilder.build().toString();
-			
-			//HttpUrl.Builder urlBuilder1 = HttpUrl.parse("http://localhost:3001/getSongTitleById/" + songId).newBuilder();
-			//urlBuilder.addQueryParameter("shouldDecrement", "false");
-			//urlBuilder.addQueryParameter("secondNumber", secondNumber);
-			//String url1 = urlBuilder.build().toString();
-				
-			//System.out.println(url);
-		    //RequestBody body = RequestBody.create(null, new byte[0]);
 
 			Request r = new Request.Builder()
 					.url(url)
@@ -107,24 +86,16 @@ public class PlaylistDriverImpl implements PlaylistDriver {
 			try {
 				responseFromAddMs = call.execute();
 				addServiceBody = responseFromAddMs.body().string();
-				//responseFromSong = call1.execute();
-				//addServiceBody1 = responseFromSong.body().string();
-				//System.out.println(addServiceBody);
-				//response.put("data", mapper.readValue(addServiceBody, Map.class));
 				songName = mapper.readValue(addServiceBody, Map.class).get("data").toString();
-				//String status1 = mapper.readValue(addServiceBody1, Map.class).get("data").toString();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
 		DbQueryStatus status;
 		Map<String, Object> insertUserName = new HashMap<String, Object>(); 
-		//Map<String, Object> insertF = new HashMap<String, Object>();
 		Map<String, Object> insert = new HashMap<String, Object>();
 		Map<String, Object> insertSong = new HashMap<String, Object>();
 		insertUserName.put("userName", userName);
-		//insertF.put("frndUserName", frndUserName);
-		//insert.put("userName", userName);
 		insert.put("plName", userName + "-favourites");
 		insert.put("songId", songId);
 		insertSong.put("plName", userName + "-favourites");
@@ -139,12 +110,6 @@ public class PlaylistDriverImpl implements PlaylistDriver {
 	            	status = new DbQueryStatus(null, DbQueryExecResult.QUERY_ERROR_NOT_FOUND);
 	            	return status;
 	            }
-	            /*node_boolean = tx.run("MATCH (a:profile {userName:$frndUserName}) RETURN a", 
-		                insertF);
-	            if (!(node_boolean.hasNext())) {
-	            	status = new DbQueryStatus(null, DbQueryExecResult.QUERY_ERROR_NOT_FOUND);
-	            	return status;
-	            }*/
 	            node_boolean = tx.run("MATCH (a:playlist {plName:$plName})" + 
 	            		"-[r:includes]-(b:song {songId:$songId})\n"
 	            		+ "RETURN r",
@@ -169,11 +134,8 @@ public class PlaylistDriverImpl implements PlaylistDriver {
 	public DbQueryStatus unlikeSong(String userName, String songId) {
 		DbQueryStatus status;
 		Map<String, Object> insertUserName = new HashMap<String, Object>(); 
-		//Map<String, Object> insertF = new HashMap<String, Object>();
 		Map<String, Object> insert = new HashMap<String, Object>();
 		insertUserName.put("userName", userName);
-		//insertF.put("frndUserName", frndUserName);
-		//insert.put("userName", userName);
 		insert.put("plName", userName + "-favourites");
 		insert.put("songId", songId);
 		try (Session session = ProfileMicroserviceApplication.driver.session()){
@@ -185,12 +147,6 @@ public class PlaylistDriverImpl implements PlaylistDriver {
 	            	status = new DbQueryStatus(null, DbQueryExecResult.QUERY_ERROR_NOT_FOUND);
 	            	return status;
 	            }
-	            /*node_boolean = tx.run("MATCH (a:profile {userName:$frndUserName}) RETURN a", 
-		                insertF);
-	            if (!(node_boolean.hasNext())) {
-	            	status = new DbQueryStatus(null, DbQueryExecResult.QUERY_ERROR_NOT_FOUND);
-	            	return status;
-	            }*/
 	            node_boolean = tx.run("MATCH (a:playlist {plName:$plName})" + 
 	            		"-[r:includes]-(b:song {songId:$songId})\n"
 	            		+ "RETURN r",
@@ -215,13 +171,8 @@ public class PlaylistDriverImpl implements PlaylistDriver {
 	public DbQueryStatus deleteSongFromDb(String songId) {
 		DbQueryStatus status;
 		Map<String, Object> insertUserName = new HashMap<String, Object>(); 
-		//Map<String, Object> insertF = new HashMap<String, Object>();
 		Map<String, Object> insert = new HashMap<String, Object>();
 		insertUserName.put("songId", songId);
-		//insertF.put("frndUserName", frndUserName);
-		//insert.put("userName", userName);
-		//insert.put("plName", userName + "-favourites");
-		//insert.put("songId", songId);
 		try (Session session = ProfileMicroserviceApplication.driver.session()){
 			try (Transaction tx = session.beginTransaction()){
 				
@@ -231,21 +182,6 @@ public class PlaylistDriverImpl implements PlaylistDriver {
 	            	status = new DbQueryStatus(null, DbQueryExecResult.QUERY_ERROR_NOT_FOUND);
 	            	return status;
 	            }
-	            /*node_boolean = tx.run("MATCH (a:profile {userName:$frndUserName}) RETURN a", 
-		                insertF);
-	            if (!(node_boolean.hasNext())) {
-	            	status = new DbQueryStatus(null, DbQueryExecResult.QUERY_ERROR_NOT_FOUND);
-	            	return status;
-	            }*/
-	            /*node_boolean = tx.run("MATCH (a:playlist {plName:$plName})" + 
-	            		"-[r:includes]-(b:song {songId:$songId})\n"
-	            		+ "RETURN r",
-	                      insert);
-	            if (!(node_boolean.hasNext())) {
-	            	status = new DbQueryStatus(null, DbQueryExecResult.QUERY_ERROR_NOT_FOUND);
-	            	return status;
-	              }
-	            tx.success();*/
 	        }
 			session.writeTransaction(tx -> tx.run("MATCH (s:song {songId: \"\" + $songId + \"\"}) DETACH DELETE s", 
 					insertUserName));
