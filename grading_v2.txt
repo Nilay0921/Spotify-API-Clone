@@ -1,7 +1,7 @@
 Marked by: Brian Lin (briankw.lin@mail.utoronto.ca)
 Team: microservicea3
 
-GRADE AFTER REMARK: (1 + 3 + 32) - (floor(54 * 0.1)) / 54 = 31/54
+GRADE AFTER REMARK: (1 + 3 + 46) - (floor(54 * 0.2)) / 54 = 40/54
 
 NOTES: Below commit not first-letter-capitalized. Profile controller needs to be better-documented.
 https://github.com/UTSCCSCC01/a3-microservices/commit/bd5c16daf54caa57f988ec662be453a905590d08
